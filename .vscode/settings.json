@@ -7,6 +7,8 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/CMakeFiles": true,
-        "**/CMakeCache.txt": true
+        "**/CMakeCache.txt": true,
+        "**/cmake_install.cmake": true,
+        "**/Makefile": true,
     }
 }
