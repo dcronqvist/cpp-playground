@@ -7,3 +7,4 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(todo-list)
 add_subdirectory(tic-tac-toe)
+add_subdirectory(chip-8)
