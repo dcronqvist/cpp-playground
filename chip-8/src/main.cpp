@@ -1,64 +1,23 @@
-#include <glad/gl.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include <fstream>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "chip8.h"
 
-static void error_callback(int error, const char *description)
-{
-  fprintf(stderr, "Error: %s\n", description);
-}
+int main(int arc, char **argv) {
 
-static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-int main(void)
-{
-  GLFWwindow *window;
-  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-  GLint mvp_location, vpos_location, vcol_location;
-
-  glfwSetErrorCallback(error_callback);
-
-  if (!glfwInit())
-    exit(EXIT_FAILURE);
-
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
-  window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-  if (!window)
-  {
-    glfwTerminate();
-    exit(EXIT_FAILURE);
+  // Read the game data from the file at argv[1]
+  std::ifstream file(argv[1], std::ios::binary);
+  if (!file.is_open()) {
+    return 1;
   }
 
-  glfwSetKeyCallback(window, key_callback);
+  file.seekg(0, std::ios::end);
+  int fileSize = file.tellg();
+  file.seekg(0, std::ios::beg);
 
-  glfwMakeContextCurrent(window);
-  gladLoadGL(glfwGetProcAddress);
-  glfwSwapInterval(1);
+  unsigned char *gameData = new unsigned char[fileSize];
+  file.read((char *)gameData, fileSize);
+  file.close();
 
-  while (!glfwWindowShouldClose(window))
-  {
-    int width, height;
-
-    glfwGetFramebufferSize(window, &width, &height);
-
-    glClearColor(1.0F, 0.0F, 0.0F, 1.0F);
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-  }
-
-  glfwDestroyWindow(window);
-
-  glfwTerminate();
-  exit(EXIT_SUCCESS);
+  Chip8 chip8 = Chip8(gameData, fileSize);
+  return chip8.run();
 }

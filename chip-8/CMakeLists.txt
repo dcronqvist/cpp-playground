@@ -6,6 +6,7 @@ set(CHIP8_SOURCES
 
   # CHIP-8
   src/main.cpp
+  src/chip8.cpp
 )
 
 add_executable(chip-8 ${CHIP8_SOURCES})
